@@ -1,0 +1,31 @@
+# Name of the application/service that will be registered with Spring Cloud
+spring:
+  application:
+    name: config_server
+
+  # Activates the git profile for fetching configurations
+  profiles:
+    active: git
+
+  cloud:
+    config:
+      server:
+        git:
+          # The GitHub repository URL where configuration files are stored
+          uri: https://github.com/DileepSimham/movie_service_config.git
+
+          # Specifies which branch to use (in this case, the main branch)
+          default-label: main
+
+          # Maximum time (in seconds) to wait when fetching configurations from git
+          timeout: 5
+
+          # Clones the repository when the config server starts up
+          clone-on-start: true
+
+          # Forces a pull from remote repository even if local copy exists
+          force-pull: true
+
+# Port number on which the config server will run
+server:
+  port: 8071

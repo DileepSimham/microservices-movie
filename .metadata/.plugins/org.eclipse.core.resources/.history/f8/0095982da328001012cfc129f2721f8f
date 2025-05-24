@@ -1,0 +1,26 @@
+package com.movie.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.movie.jdbc.JdbcExecuteMethodsService;
+
+@RestController
+@RequestMapping("/movies/jdbc")
+public class JdbcController {
+
+	@Autowired
+	private JdbcExecuteMethodsService jdbcService;
+
+	@GetMapping("/insertMovie")
+	public ResponseEntity<String> insertMovies() {
+		Integer insertMovies = jdbcService.insertMovies();
+
+		return ResponseEntity.ok(insertMovies + " rows inserted");
+
+	}
+
+}

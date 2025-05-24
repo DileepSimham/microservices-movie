@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: movieservice  # 👈 Unique name for this microservice, used in service discovery & centralized config
+
+  profiles:
+    active: qa  # 👈 Activates the "qa" profile — this allows loading qa-specific configs from config server or locally
+
+  config:
+    import: "configserver:http://localhost:8071/"  
+    # 👈 Loads external configuration from Spring Cloud Config Server.
+    # Since there's no 'optional:', the app will fail to start if the config server is unavailable.
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movie_service  # 👈 PostgreSQL DB connection URL (local setup)
+    username: postgres  # 👈 Database username
+    password: Rgukt@1483  # 👈 Database password (tip: use vault/env vars for prod)
+
+  jpa:
+    show-sql: true  # 👈 Logs SQL queries in the console (great for debugging)
+    hibernate:
+      ddl-auto: update  # 👈 Auto creates or updates DB tables based on your JPA entities
+    properties:
+      hibernate:
+        format_sql: true  # 👈 Makes the SQL logs nicely formatted and readable
+
+server:
+  port: 8080  # 👈 Runs this service on port 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # 👈 Exposes all actuator endpoints like /actuator/health, /actuator/info, etc.
+  endpoint:
+    shutdown:
+      enabled: true  # 👈 Allows graceful shutdown through /actuator/shutdown (useful for dev)
+  info:
+    env:
+      enabled: true  # 👈 Adds environment info (like system props and env vars) to /actuator/info
+
+eureka:
+  instance:
+    prefer-ip-address: true  # 👈 Registers this service using its IP instead of hostname
+  client:
+    fetchRegistry: true  # 👈 Tells the client to fetch service registry from Eureka (used for load balancing)
+    registerWithEureka: true  # 👈 Registers this service instance with Eureka
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/  
+      # 👈 URL of the Eureka server where this service should register itself
+
+info:
+  app:
+    name: "movie-service"  # 👈 Display name in /actuator/info
+    description: "movie service application"  # 👈 App purpose description
+    version: "1.0.0"  # 👈 App version for visibility and tracking

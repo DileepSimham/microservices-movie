@@ -1,0 +1,20 @@
+package com.movie.service;
+
+import com.movie.config.MovieServiceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ConfigService {
+
+    private final MovieServiceConfig config;
+
+    @Autowired
+    public ConfigService(MovieServiceConfig config) {
+        this.config = config;
+    }
+
+    public MovieServiceConfig getConfig() {
+        return config;
+    }
+}

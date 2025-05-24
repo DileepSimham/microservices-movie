@@ -1,0 +1,6 @@
+@FeignClient(name = "MOVIE-SERVICE")
+public interface MovieClient {
+
+    @GetMapping("/movies/{id}")
+    MovieDTO getMovieById(@PathVariable("id") Long id);
+}

@@ -1,0 +1,42 @@
+package com.movie.controller;
+
+import com.movie.model.Movie;
+import com.movie.service.MovieService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/movies")
+public class MovieController {
+
+    @Autowired
+    private MovieService movieService;
+
+    @GetMapping
+    public List<Movie> getAllMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Movie> getMovieById(@PathVariable Long id) {
+        return movieService.getMovieById(id);
+    }
+
+    @GetMapping("/genre/{genre}")
+    public List<Movie> getMoviesByGenre(@PathVariable String genre) {
+        return movieService.getMoviesByGenre(genre);
+    }
+
+    @PostMapping
+    public Movie addMovie(@RequestBody Movie movie) {
+        return movieService.addMovie(movie);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteMovie(@PathVariable Long id) {
+        movieService.deleteMovie(id);
+    }
+}

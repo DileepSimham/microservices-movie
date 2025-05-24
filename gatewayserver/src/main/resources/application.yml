@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: "gatewayserver"  # 👈 Name of the application, used in logs, discovery services like Eureka, and config server.
+
+  config:
+    import: "optional:configserver:http://localhost:8071/"  
+    # 👈 Tells Spring Boot to load additional configuration from the config server at port 8071.
+    # "optional:" means the app will still start if the config server is down.
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # 👈 Enables dynamic routing using service discovery (e.g., Eureka).
+          lowerCaseServiceId: true  # 👈 Makes service IDs lowercase for route URLs, like /movieservice/**.
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:7080/realms/master/protocol/openid-connect/certs"
+          # 👈 This is the URI to fetch the public keys (JWKs) from Keycloak to validate JWT tokens.
+          # The gateway will use this to check if incoming tokens are valid.
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # 👈 Exposes all actuator endpoints like /actuator/health, /actuator/gateway/routes, etc.
+
+  endpoint:
+    gateway:
+      access: unrestricted  # 👈 Allows unrestricted access to /actuator/gateway/** endpoints (useful for dev, not prod!).
+
+  info:
+    env:
+      enabled: true  # 👈 Shows environment info (like system properties, env vars) in /actuator/info.
+
+info:
+  app:
+    name: "gatewayserver"  # 👈 This info appears in /actuator/info.
+    description: "Movie Microservice gateway Server Application"  # 👈 Helpful description of your app.
+    version: "1.0.0"  # 👈 App version for tracking and visibility.
+
+logging:
+  level:
+    com:
+      eazybytes:
+        gatewayserver: DEBUG  # 👈 Enables DEBUG-level logs for your package.
+        # Useful to see detailed flow, especially for routing, token validation, and filter execution.

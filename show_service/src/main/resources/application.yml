@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: showservice  # 👈 Unique name for the show service microservice, used in discovery and config server mapping
+
+  profiles:
+    active: qa  # 👈 Enables the "qa" Spring profile (for QA/testing environment)
+
+  config:
+    import: "configserver:http://localhost:8071/"  
+    # 👈 Pulls additional configuration from the Spring Cloud Config Server running on port 8071
+    # This centralizes config management across services
+    # NOTE: No 'optional:' means the app won't start if the config server is unreachable
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movie_service  # 👈 PostgreSQL DB connection URL (yes, reusing same DB as movie service)
+    username: postgres  # 👈 DB username
+    password: Rgukt@1483  # 👈 DB password (for dev; use environment vars or vault in prod!)
+
+  jpa:
+    show-sql: true  # 👈 Logs all SQL queries executed by Hibernate — super helpful for debugging!
+    hibernate:
+      ddl-auto: update  # 👈 Updates the DB schema to match your JPA entities (safe for dev, not for prod)
+    properties:
+      hibernate:
+        format_sql: true  # 👈 Makes the logged SQL queries more readable by formatting them
+
+server:
+  port: 8081  # 👈 The Show Service will run on port 8081 (different from Movie Service's 8080)
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # 👈 Exposes all actuator endpoints — health, info, metrics, etc.
+  endpoint:
+    shutdown:
+      enabled: true  # 👈 Enables graceful shutdown endpoint at /actuator/shutdown
+  info:
+    env:
+      enabled: true  # 👈 Includes environment details (env vars, system props) in the /actuator/info output
+
+eureka:
+  instance:
+    prefer-ip-address: true  # 👈 Registers this service using its IP address instead of hostname
+  client:
+    fetchRegistry: true  # 👈 Fetches registry from Eureka to discover other services
+    registerWithEureka: true  # 👈 Registers this service with Eureka for others to find it
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/  
+      # 👈 This is the Eureka server’s URL where it will register itself and fetch the registry
+
+info:
+  app:
+    name: "show-service"  # 👈 App name shown in /actuator/info
+    description: "show service application"  # 👈 A short description of the app's purpose
+    version: "1.0.0"  # 👈 App version for visibility and diagnostics

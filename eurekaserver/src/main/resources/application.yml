@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: eurekaserver  # 👈 The name of your Spring Boot app (important for discovery & config server integration)
+
+  config:
+    import: "configserver:http://localhost:8071/"  
+    # 👈 This tells Spring Boot to fetch external configurations from the Spring Cloud Config Server.
+    # No 'optional:' here — so the app **won’t start** unless the config server is available.
+    # This is usually preferred in real environments to ensure consistent configuration.

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: movie_service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movie_service
+    username: postgres
+    password: Rgukt@1483
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080

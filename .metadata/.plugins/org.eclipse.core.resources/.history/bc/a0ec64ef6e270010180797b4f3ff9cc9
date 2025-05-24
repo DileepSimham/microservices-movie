@@ -1,0 +1,23 @@
+package com.movie.controller;
+
+import com.movie.config.MovieServiceConfig;
+import com.movie.service.ConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/config")
+public class ConfigController {
+
+    private final ConfigService configService;
+
+    @Autowired
+    public ConfigController(ConfigService configService) {
+        this.configService = configService;
+    }
+
+    @GetMapping
+    public MovieServiceConfig getConfig() {
+        return configService.getConfig();
+    }
+}

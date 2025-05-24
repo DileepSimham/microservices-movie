@@ -1,0 +1,34 @@
+----------------------------------------------------
+             Select Operations vs Non-Select Operations
+----------------------------------------------------
+
+Select Operations:  
+  - When using `SELECT`, you get a **group of records** as the result.  
+  - Example: `select * from movies;`
+
+Non-Select Operations:  
+  - When using `INSERT`, `UPDATE`, or `DELETE`, you get a **numeric value** that tells how many rows were affected.  
+  - Example: `update movies set heroine='Tamannah' where no=1;`
+
+----------------------------------------------------
+                    Methods to Execute Queries
+----------------------------------------------------
+
+1. **executeQuery()**:
+   - Used for **Select Operations** (like `SELECT`).
+   - Returns a **`ResultSet`** with the result (group of records).
+   - Example:  
+     `ResultSet rs = st.executeQuery("select * from movies");`
+
+2. **executeUpdate()**:
+   - Used for **Non-Select Operations** like `INSERT`, `UPDATE`, or `DELETE`.
+   - Returns an **`int`** value that tells how many rows were affected.
+   - Example:  
+     `int rowCount = st.executeUpdate("delete from employees where esal > 100000");`
+     `System.out.println("The number of employees deleted: " + rowCount);`
+
+3. **execute()**:
+   - Can be used for **both Select and Non-Select Operations**.
+   - Useful when you don’t know the type of query in advance, and it comes dynamically at runtime.
+
+----------------------------------------------------

@@ -1,0 +1,27 @@
+package com.movie.controller;
+
+import com.show.config.ShowServiceConfig;
+import com.show.dto.ShowServiceConfigResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/show-service")
+public class ShowConfigController {
+
+    @Autowired
+    private ShowServiceConfig config;
+
+    @GetMapping("/config")
+    public ShowServiceConfigResponse getShowServiceConfig() {
+        return new ShowServiceConfigResponse(
+                config.getName(),
+                config.getDescription(),
+                config.getVersion(),
+                config.getSupportedLanguages(),
+                config.getDefaultLanguage(),
+                config.getMaxShows(),
+                config.getFeatureFlags()
+        );
+    }
+}
