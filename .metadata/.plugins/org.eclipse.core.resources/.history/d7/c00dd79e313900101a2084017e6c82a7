@@ -1,0 +1,38 @@
+package com.movie.controller;
+
+import com.movie.dto.GenreDTO;
+import com.movie.service.GenreService;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/genres")
+@Slf4j
+public class GenreController {
+
+	@Autowired
+	private GenreService genreService;
+
+	@GetMapping("/internal")
+	public ResponseEntity<List<GenreDTO>> getAllAvailablesGenres() {
+		log.info("inside internal API-generic controller");
+		List<GenreDTO> allAvailablesGenres = genreService.getAllAvailablesGenres();
+		return ResponseEntity.ok(allAvailablesGenres);
+	}
+
+	@GetMapping("/external")
+	public ResponseEntity<List<GenreDTO>> getAllAvailablesGenresExternal() {
+		log.info("Received request to fetch all available external genres");
+		List<GenreDTO> allAvailablesGenresExternal = genreService.getAllAvailablesGenresExternal();
+		log.info("Returning {} genres to the client", allAvailablesGenresExternal.size());
+		return ResponseEntity.ok(allAvailablesGenresExternal);
+	}
+}

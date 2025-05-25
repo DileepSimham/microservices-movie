@@ -1,0 +1,5 @@
+package com.movie.dto;
+public class Root{
+    public ArrayList<Genre> genres;
+}
+

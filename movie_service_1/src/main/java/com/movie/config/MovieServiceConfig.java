@@ -24,6 +24,7 @@ public class MovieServiceConfig {
     private int maxMovies;
     private Map<String, String> apiKeys;
     private Map<String, Boolean> featureFlags;
+    private Map<String, String> tmdbUrl;
 
     // Getters and Setters for all fields
 }

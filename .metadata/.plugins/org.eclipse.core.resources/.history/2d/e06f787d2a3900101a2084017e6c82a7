@@ -1,0 +1,73 @@
+package com.movie.service;
+
+import com.movie.config.MovieServiceConfig;
+import com.movie.dto.GenreDTO;
+import com.movie.entity.Genre;
+import com.movie.repository.GenreRepository;
+import com.movie.util.MovieServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
+@Service
+public class GenreService {
+
+	@Autowired
+	private GenreRepository genreRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Autowired
+	private ConfigService configService;
+
+	public List<GenreDTO> getAllAvailablesGenres() {
+		List<Genre> genreList = genreRepository.findAll();
+
+		return genreList.stream()
+				.map(genre -> new GenreDTO(genre.getId(), genre.getGenreName(), genre.getOfficialGenreId())).toList();
+	}
+
+	public List<GenreDTO> getAllAvailablesGenresExternal() {
+
+		// 🎯 The TMDb API URL that gives us the list of movie genres in English
+		String url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
+
+		// 🧾 Create HTTP headers that will go with our request
+		HttpHeaders headers = new HttpHeaders();
+
+		// 📦 Tell the server we want the response in JSON format
+		headers.set("accept", "application/json");
+
+		// 🔐 Add our Bearer token (API access token) to authenticate the request
+		headers.set("Authorization", "Bearer " + MovieServiceConstants.TMDB_ACCESS_TOKEN);
+
+		// 📬 Wrap the headers into an HttpEntity (we're not sending a body, just
+		// headers)
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+
+		// 🚀 Fire off the GET request using RestTemplate and capture the response
+		// - We pass the URL
+		// - The HTTP method (GET)
+		// - Our request entity (headers)
+		// - The type of response we're expecting (String for now, just raw JSON)
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+		// 🖨️ Print out the raw JSON response so we can see what the API returned
+		System.out.println(response);
+
+		// 📦 TODO: Convert the JSON body to a list of GenreDTO objects using
+		// Jackson/ObjectMapper
+		// For now, we just return null, but eventually you'll parse that JSON and map
+		// it!
+
+		return null;
+	}
+
+}

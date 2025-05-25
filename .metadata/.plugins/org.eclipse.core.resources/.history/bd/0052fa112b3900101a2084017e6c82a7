@@ -1,0 +1,52 @@
+package com.movie.service;
+
+import com.movie.config.MovieServiceConfig;
+import com.movie.dto.GenreDTO;
+import com.movie.dto.GenreResponse;
+import com.movie.entity.Genre;
+import com.movie.repository.GenreRepository;
+import com.movie.util.MovieServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class GenreService {
+
+	@Autowired
+	private GenreRepository genreRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+
+	public List<GenreDTO> getAllAvailablesGenres() {
+		List<Genre> genreList = genreRepository.findAll();
+
+		return genreList.stream()
+				.map(genre -> new GenreDTO(genre.getGenreName(), genre.getOfficialGenreId())).toList();
+	}
+
+	public List<GenreDTO> getAllAvailablesGenresExternal() {
+
+		String url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("accept", "application/json");
+		headers.set("Authorization", "Bearer " + MovieServiceConstants.TMDB_ACCESS_TOKEN);
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		ResponseEntity<GenreResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+				GenreResponse.class);
+
+		return response.getBody().getGenres().stream().map(i -> new GenreDTO(null, i.getName(), i.getId()))
+				.collect(Collectors.toList());
+
+	}
+
+}

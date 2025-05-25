@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.sql.DataSource;
 
@@ -30,14 +31,14 @@ public class JdbcExecuteMethodsService {
 	// the application context.
 	@Autowired
 	private DataSource dataSource;
+	
+
 
 	public Integer insertMovies() {
 		String query = "INSERT INTO movie (title, genre, language, duration, description) "
 				+ "VALUES ('Stranger Things', 'Sci-Fi', 'English', 50, 'A group of kids uncover supernatural forces and government secrets in a small town.')";
 
 		log.info("Starting insertMovies() - preparing to execute insert query");
-
-
 
 		try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
 
@@ -78,9 +79,6 @@ public class JdbcExecuteMethodsService {
 				movieEntity.setLanguage(resultSet.getString("language"));
 				movieEntity.setDuration(resultSet.getInt("duration"));
 				movieEntity.setDescription(resultSet.getString("description"));
-
-
-
 
 				// Convert Movie entity to MovieDTO using MovieMapper
 				MovieDTO movieDTO = movieMapper.convertToDTO(movieEntity);

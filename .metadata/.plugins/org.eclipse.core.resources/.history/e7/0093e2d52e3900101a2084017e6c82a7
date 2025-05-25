@@ -1,0 +1,84 @@
+package com.movie.service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.movie.dto.GenreDTO;
+import com.movie.dto.GenreResponse;
+import com.movie.entity.Genre;
+import com.movie.repository.GenreRepository;
+import com.movie.util.MovieServiceConstants;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class GenreService {
+
+	@Autowired
+	private GenreRepository genreRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	public List<GenreDTO> getAllAvailablesGenres() {
+
+		List<Genre> genreList = genreRepository.findAll();
+
+		log.info("genreList from database {}", genreList);
+		if (genreList.isEmpty()) {
+			log.info("genreList is empty from database, calling external method ");
+			List<GenreDTO> allAvailablesGenresExternal = getAllAvailablesGenresExternal();
+			if (!allAvailablesGenresExternal.isEmpty()) {
+				allAvailablesGenresExternal.stream()
+						.map(genre -> Genre.builder().genreName(genre.getGenreName())
+								.officialGenreId(genre.getOfficialGenreId()).build())
+						.forEach(genreEntity -> genreRepository.save(genreEntity));
+			}
+		}
+
+		genreList = genreRepository.findAll();
+		return genreList.stream().map(genre -> new GenreDTO(genre.getGenreName(), genre.getOfficialGenreId())).toList();
+	}
+
+	public List<GenreDTO> getAllAvailablesGenresExternal() {
+		try {
+			// API URL to fetch genre list from TMDb
+			String url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
+
+			// Prepare HTTP headers with authorization and accept JSON response
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("accept", "application/json");
+			headers.set("Authorization", "Bearer " + MovieServiceConstants.TMDB_ACCESS_TOKEN);
+
+			// Wrap headers into HttpEntity for request
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+
+			// Call the external API and get response mapped to GenreResponse class
+			ResponseEntity<GenreResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+					GenreResponse.class);
+
+			// Map the genres from response body to your DTO list and return
+			return response.getBody().getGenres().stream().map(i -> new GenreDTO(i.getName(), i.getId()))
+					.collect(Collectors.toList());
+
+		} catch (Exception e) {
+			// Log the error to help debugging — important!
+			System.err.println("Failed to fetch genres from TMDb API: " + e.getMessage());
+			e.printStackTrace();
+
+			// Return empty list if the API call fails — keeps your app stable
+			return Collections.emptyList();
+		}
+	}
+
+}

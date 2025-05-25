@@ -1,0 +1,7 @@
+package com.movie.util;
+
+public class MovieServiceConstants {
+
+
+    public static  final String TMDB_ACCESS_TOKEN="eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4YWU1ZmVhODc5MmYxZTFjOTM4OTQ5MTg3NzZjMzc0YyIsIm5iZiI6MTc0ODE0Njk1OS4xMTIsInN1YiI6IjY4MzI5YjBmMDdjNmU4ZGM5OGE4Nzk3YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jxnLSgp2Jva-3jTHwyHO7kFrOfEQ4VGWkn-oj4nG25E";
+}
